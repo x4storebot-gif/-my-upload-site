@@ -9,27 +9,27 @@
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; display: flex; flex-direction: column; min-height: 100vh; }
         .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        
         .settings-container { position: absolute; top: 20px; right: 20px; z-index: 100; }
         .settings-icon { cursor: pointer; font-size: 30px; }
         .settings-menu { display: none; background: #a5d6a7; padding: 10px; border-radius: 10px; margin-top: 5px; position: absolute; right: 0; }
         .settings-menu button { display: block; width: 100%; cursor: pointer; background: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; margin-bottom: 5px; color: #2e7d32; }
-        
         img { width: 220px; margin-bottom: 10px; }
-        
         .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 20px; border-radius: 10px; cursor: pointer; display: block; margin: 30px 0; color: #555; font-weight: bold; }
         #fileInput { display: none; }
-        
         .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; }
-        
+        /* الميزات الجديدة */
+        #previewContainer { margin: 15px 0; display: none; }
+        #fileInfo { font-weight: bold; font-size: 0.9rem; color: #2e7d32; }
+        .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
         #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
         #bar { width: 0%; height: 100%; background: #2e7d32; }
-        
         footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
         footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
+
+    <div class="loader" id="loader"><h1>Uploading...</h1></div>
 
     <div class="settings-container">
         <div class="settings-icon" onclick="toggleMenu()">⚙️</div>
@@ -45,10 +45,13 @@
         <p>Upload simply, share in seconds.</p>
         
         <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose File</label>
-        <input type="file" id="fileInput" onchange="updateLabel()">
+        <input type="file" id="fileInput" onchange="handleFile()">
         
+        <div id="previewContainer">
+            <div id="fileInfo"></div>
+        </div>
+
         <button class="action-btn" onclick="uploadFile()">Upload File</button>
-        
         <div id="progress"><div id="bar"></div></div>
     </div>
 
@@ -61,27 +64,31 @@
             const menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
         }
-
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-            const btn = document.getElementById('themeBtn');
-            btn.innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
+            document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
         }
-
-        function updateLabel() {
+        function handleFile() {
             const input = document.getElementById('fileInput');
-            const label = document.getElementById('fileLabel');
-            if (input.files.length > 0) {
-                label.innerText = input.files[0].name;
+            const file = input.files[0];
+            if (file) {
+                document.getElementById('fileLabel').innerText = file.name;
+                document.getElementById('previewContainer').style.display = 'block';
+                const size = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                document.getElementById('fileInfo').innerText = `Type: ${file.type.split('/')[1] || 'File'} | Size: ${size}`;
             }
         }
-
         function uploadFile() {
+            if(!document.getElementById('fileInput').files.length) return alert("Please select a file first");
+            document.getElementById('loader').style.display = 'flex';
             document.getElementById('progress').style.display = 'block';
             let width = 0;
             let interval = setInterval(() => {
-                if (width >= 100) { clearInterval(interval); alert("Upload Complete!"); }
-                else { width++; document.getElementById('bar').style.width = width + '%'; }
+                if (width >= 100) { 
+                    clearInterval(interval); 
+                    document.getElementById('loader').style.display = 'none';
+                    alert("Upload Complete!"); 
+                } else { width++; document.getElementById('bar').style.width = width + '%'; }
             }, 30);
         }
     </script>
