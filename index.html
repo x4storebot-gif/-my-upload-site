@@ -10,14 +10,12 @@
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; }
         .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
         
-        /* تحسين أيقونة الترس */
-        .settings-icon { cursor: pointer; font-size: 30px; position: absolute; top: 20px; right: 20px; transition: transform 0.3s; }
-        .settings-icon:hover { transform: rotate(90deg); }
-        .settings-menu { display: none; background: #eee; padding: 15px; border-radius: 10px; margin-top: 50px; position: absolute; right: 20px; }
+        .settings-icon { cursor: pointer; font-size: 30px; position: absolute; top: 20px; right: 20px; }
+        .settings-menu { display: none; background: #c8e6c9; padding: 15px; border-radius: 10px; margin-top: 50px; position: absolute; right: 20px; color: black; }
+        .settings-menu button { display: block; width: 100%; margin-bottom: 5px; cursor: pointer; background: white; border: none; padding: 8px; border-radius: 5px; }
         
-        img { width: 120px; margin-bottom: 10px; }
+        img { width: 200px; margin-bottom: 10px; }
         
-        /* تكبير زر اختيار الملف وزر الرفع */
         input[type="file"] { margin: 30px 0; display: block; width: 100%; padding: 20px; border: 2px dashed #2e7d32; border-radius: 10px; font-size: 1.1rem; }
         button { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; transition: 0.3s; }
         button:hover { background-color: #1b5e20; }
@@ -28,10 +26,10 @@
 </head>
 <body>
 
-    <div class="settings-icon" onclick="document.getElementById('menu').style.display = (document.getElementById('menu').style.display === 'block' ? 'none' : 'block')">⚙️</div>
+    <div class="settings-icon" onclick="toggleMenu()">⚙️</div>
     <div id="menu" class="settings-menu">
-        <button onclick="document.body.classList.toggle('dark-mode')">Dark Mode</button>
-        <button onclick="alert('Support Section')">Support</button>
+        <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
+        <button onclick="alert('Support: contact@fastdrop.com')">Support</button>
     </div>
 
     <div class="container">
@@ -48,6 +46,17 @@
     <footer style="margin-top: 40px; opacity: 0.7;">© 2026 FastDrop</footer>
 
     <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('themeBtn');
+            btn.innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
+        }
+
         function uploadFile() {
             document.getElementById('progress').style.display = 'block';
             let width = 0;
