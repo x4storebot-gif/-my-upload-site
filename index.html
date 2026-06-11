@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" translate="no">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,18 +10,18 @@
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; }
         .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
         
-        .settings-container { position: absolute; top: 20px; right: 20px; text-align: left; }
+        .settings-container { position: absolute; top: 20px; right: 20px; }
         .settings-icon { cursor: pointer; font-size: 30px; }
-        /* القائمة تظهر بوضوح الآن */
-        .settings-menu { display: none; background: #a5d6a7; padding: 10px; border-radius: 10px; margin-top: 5px; min-width: 120px; }
-        .settings-menu button { display: block; width: 100%; margin-bottom: 5px; cursor: pointer; background: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; }
+        .settings-menu { display: none; background: #a5d6a7; padding: 10px; border-radius: 10px; margin-top: 5px; position: absolute; right: 0; }
+        .settings-menu button { display: block; width: 100%; cursor: pointer; background: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; margin-bottom: 5px; }
         
         img { width: 200px; margin-bottom: 10px; }
         
-        /* زر اختيار الملف يظهر بالإنجليزية */
-        input[type="file"] { margin: 30px 0; display: block; width: 100%; padding: 20px; border: 2px dashed #2e7d32; border-radius: 10px; font-size: 1.1rem; color: #000; }
-        button { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; transition: 0.3s; }
-        button:hover { background-color: #1b5e20; }
+        /* إخفاء الزر القديم وتصميم زر جديد */
+        .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 20px; border-radius: 10px; cursor: pointer; display: block; margin: 30px 0; color: #555; }
+        #fileInput { display: none; }
+        
+        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; }
         
         #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
         #bar { width: 0%; height: 100%; background: #2e7d32; }
@@ -42,13 +42,13 @@
         <h1>FastDrop</h1>
         <p>Upload simply, share in seconds.</p>
         
-        <input type="file" id="fileInput">
-        <button onclick="uploadFile()">Upload File</button>
+        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose File</label>
+        <input type="file" id="fileInput" onchange="updateLabel()">
+        
+        <button class="action-btn" onclick="uploadFile()">Upload File</button>
         
         <div id="progress"><div id="bar"></div></div>
     </div>
-
-    <footer style="margin-top: 40px; opacity: 0.7;">© 2026 FastDrop</footer>
 
     <script>
         function toggleMenu() {
@@ -60,6 +60,15 @@
             document.body.classList.toggle('dark-mode');
             const btn = document.getElementById('themeBtn');
             btn.innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
+        }
+
+        // تغيير اسم الزر عند اختيار ملف
+        function updateLabel() {
+            const input = document.getElementById('fileInput');
+            const label = document.getElementById('fileLabel');
+            if (input.files.length > 0) {
+                label.innerText = input.files[0].name;
+            }
         }
 
         function uploadFile() {
