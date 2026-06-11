@@ -1,54 +1,58 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastDrop - للرفع السريع</title>
+    <title>FastDrop</title>
     <style>
         :root { --bg: linear-gradient(135deg, #e0f7fa, #e8f5e9); --card: white; --text: #000; }
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; }
-        .container { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
-        .settings-icon { cursor: pointer; font-size: 24px; position: absolute; top: 20px; left: 20px; }
-        .settings-menu { display: none; background: #eee; padding: 10px; border-radius: 10px; margin-top: 10px; }
-        img { width: 100px; }
-        #progress { width: 100%; height: 10px; background: #ddd; border-radius: 5px; margin: 20px 0; overflow: hidden; display: none; }
+        .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        
+        /* تحسين أيقونة الترس */
+        .settings-icon { cursor: pointer; font-size: 30px; position: absolute; top: 20px; right: 20px; transition: transform 0.3s; }
+        .settings-icon:hover { transform: rotate(90deg); }
+        .settings-menu { display: none; background: #eee; padding: 15px; border-radius: 10px; margin-top: 50px; position: absolute; right: 20px; }
+        
+        img { width: 120px; margin-bottom: 10px; }
+        
+        /* تكبير زر اختيار الملف وزر الرفع */
+        input[type="file"] { margin: 30px 0; display: block; width: 100%; padding: 20px; border: 2px dashed #2e7d32; border-radius: 10px; font-size: 1.1rem; }
+        button { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; transition: 0.3s; }
+        button:hover { background-color: #1b5e20; }
+        
+        #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
         #bar { width: 0%; height: 100%; background: #2e7d32; }
     </style>
 </head>
 <body>
 
-    <div class="settings-icon" onclick="document.getElementById('menu').style.display='block'">⚙️</div>
+    <div class="settings-icon" onclick="document.getElementById('menu').style.display = (document.getElementById('menu').style.display === 'block' ? 'none' : 'block')">⚙️</div>
     <div id="menu" class="settings-menu">
-        <button onclick="document.body.classList.toggle('dark-mode')">الوضع الليلي</button>
-        <button>تغيير اللغة</button>
-        <button>الدعم</button>
+        <button onclick="document.body.classList.toggle('dark-mode')">Dark Mode</button>
+        <button onclick="alert('Support Section')">Support</button>
     </div>
 
     <div class="container">
         <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
-        <p>ارفعها ببساطة، شاركها في ثوانٍ.</p>
+        <p>Upload simply, share in seconds.</p>
         
         <input type="file" id="fileInput">
-        <button onclick="uploadFile()">رفع الملف</button>
+        <button onclick="uploadFile()">Upload File</button>
         
         <div id="progress"><div id="bar"></div></div>
-        
-        <div id="recent" style="margin-top: 20px;">
-            <h3>الملفات المرفوعة مؤخراً</h3>
-            <ul id="fileList"></ul>
-        </div>
     </div>
 
-    <footer style="margin-top: 30px;">حقوق النشر © 2026 FastDrop</footer>
+    <footer style="margin-top: 40px; opacity: 0.7;">© 2026 FastDrop</footer>
 
     <script>
         function uploadFile() {
             document.getElementById('progress').style.display = 'block';
             let width = 0;
             let interval = setInterval(() => {
-                if (width >= 100) { clearInterval(interval); alert("تم الرفع!"); }
+                if (width >= 100) { clearInterval(interval); alert("Upload Complete!"); }
                 else { width++; document.getElementById('bar').style.width = width + '%'; }
             }, 30);
         }
