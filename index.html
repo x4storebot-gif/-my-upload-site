@@ -24,8 +24,9 @@
             width: 90%;
             max-width: 450px;
         }
-        h1 { color: #000; font-size: 3rem; margin-bottom: 10px; font-weight: bold; }
-        p { color: #555; margin-bottom: 30px; font-size: 1.1rem; }
+        img { width: 150px; margin-bottom: 10px; border-radius: 10px; }
+        h1 { color: #000; font-size: 2.5rem; margin: 0; font-weight: bold; }
+        p { color: #2e7d32; font-weight: bold; margin-bottom: 30px; font-size: 1.1rem; }
         input { margin: 20px 0; display: block; width: 100%; padding: 10px; border: 1px dashed #2e7d32; border-radius: 5px; }
         button { 
             background-color: #2e7d32; 
@@ -42,10 +43,13 @@
 </head>
 <body>
     <div class="container">
+        <img src="FD.png" alt="FastDrop Logo">
+        
         <h1>FastDrop</h1>
-        <p>ارفع ملفاتك، شاركها فوراً، بكل سرعة وسهولة.</p>
+        <p>ارفعها ببساطة، شاركها في ثوانٍ.</p>
+        
         <input type="file" id="fileInput">
-        <button onclick="alert('جاري تجهيز ميزة الرفع السريع!')">رفع الملف</button>
+        <button onclick="alert('جاري التجهيز...')">رفع الملف</button>
     </div>
 </body>
 </html>
