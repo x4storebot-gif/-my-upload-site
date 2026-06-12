@@ -35,9 +35,29 @@
         footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
         footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
         .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-btn { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; background: #f9f9f9; font-weight: bold; }
+        .modal-btn:hover { background: #eee; }
+        .close-modal { cursor: pointer; float: right; font-size: 20px; }
     </style>
 </head>
 <body>
+
+    <!-- Modal for Account -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAccount()">&times;</span>
+            <h2 style="color: var(--text);">Account</h2>
+            <button class="modal-btn">Sign In</button>
+            <button class="modal-btn">Create Account</button>
+            <hr>
+            <button class="modal-btn" style="background:#4285F4; color:white; border:none;">Continue with Google</button>
+            <button class="modal-btn" style="background:#333; color:white; border:none;">Continue with GitHub</button>
+        </div>
+    </div>
 
     <div class="loader" id="loader"><h1>Uploading...</h1></div>
 
@@ -46,7 +66,7 @@
             <div></div><div></div><div></div>
         </div>
         <div id="menu" class="settings-menu">
-            <button>Account</button>
+            <button onclick="openAccount()">Account</button>
             <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
             <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
             <button>Help</button>
@@ -79,6 +99,7 @@
 
     <footer>
         <p>© 2026 FastDrop | Support: <a href="https://t.me/fastdrop_support">@fastdrop_support</a></p>
+        <p style="margin-top: 10px; font-style: italic; color: #2e7d32;">Designed with care by <strong>Houssen Al Houssen</strong></p>
     </footer>
 
     <script>
@@ -88,6 +109,16 @@
             const menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
         }
+
+        // Functions for Modal
+        function openAccount() {
+            document.getElementById('accountModal').style.display = 'flex';
+            toggleMenu();
+        }
+        function closeAccount() {
+            document.getElementById('accountModal').style.display = 'none';
+        }
+
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
@@ -140,3 +171,4 @@
     </script>
 </body>
 </html>
+ 
