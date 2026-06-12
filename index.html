@@ -8,58 +8,50 @@
         :root { --bg: linear-gradient(135deg, #e0f7fa, #e8f5e9); --card: white; --text: #000; }
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; display: flex; flex-direction: column; min-height: 100vh; }
-        .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
         
-        .settings-container { position: absolute; top: 20px; right: 20px; z-index: 100; }
-        .menu-icon { cursor: pointer; padding: 10px; }
-        .menu-icon div { width: 25px; height: 3px; background: var(--text); margin: 5px 0; transition: 0.3s; }
+        /* الصندوق الابيض تم تصغير عرضه */
+        .container { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
+        
+        /* القائمة خارج المربع الابيض */
+        .settings-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
+        .menu-icon { cursor: pointer; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 5px; }
+        .menu-icon div { width: 25px; height: 3px; background: var(--text); margin: 5px 0; }
         
         .settings-menu { display: none; background: var(--card); border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin-top: 5px; position: absolute; right: 0; width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: left; }
         .settings-menu button { display: block; width: 100%; cursor: pointer; background: transparent; border: none; padding: 10px; color: var(--text); font-weight: bold; }
-        .settings-menu button:hover { background: rgba(0,128,0,0.1); }
-
-        img { width: 220px; margin-bottom: 10px; }
-        .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 20px; border-radius: 10px; cursor: pointer; display: block; margin: 30px 0; color: #555; font-weight: bold; }
-        #fileInput { display: none; }
-        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; }
         
-        .dashboard-section { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px; text-align: left; }
+        /* واجهة الحساب الكاملة */
+        .full-page-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--card); z-index: 2000; padding: 20px; box-sizing: border-box; text-align: left; }
+        .back-btn { cursor: pointer; font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; display: inline-block; }
+
+        img { width: 150px; margin-bottom: 10px; }
+        .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 15px; border-radius: 10px; cursor: pointer; display: block; margin: 20px 0; color: #555; font-weight: bold; }
+        #fileInput { display: none; }
+        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; width: 100%; }
+        
+        .dashboard-section { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px; text-align: left; }
         .file-list { margin-top: 10px; list-style: none; padding: 0; }
-        .file-item { display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.05); margin-bottom: 5px; border-radius: 5px; font-size: 0.9rem; align-items: center; }
-        .delete-btn { color: #d32f2f; cursor: pointer; font-weight: bold; margin-left: 10px; }
+        .file-item { display: flex; justify-content: space-between; padding: 8px; background: rgba(0,0,0,0.05); margin-bottom: 5px; border-radius: 5px; font-size: 0.85rem; }
+        .delete-btn { color: #d32f2f; cursor: pointer; font-weight: bold; }
         
         .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
-        #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
+        #progress { width: 100%; height: 10px; background: #ddd; border-radius: 10px; margin: 20px 0; display: none; }
         #bar { width: 0%; height: 100%; background: #2e7d32; }
         
-        footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
+        footer { margin-top: auto; padding: 15px; opacity: 0.8; font-size: 0.8rem; }
         footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-
-        /* Modal Styles */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card); padding: 30px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .modal-btn { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; background: #f9f9f9; font-weight: bold; }
-        .modal-btn:hover { background: #eee; }
-        .close-modal { cursor: pointer; float: right; font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- Modal for Account -->
-    <div id="accountModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeAccount()">&times;</span>
-            <h2 style="color: var(--text);">Account</h2>
-            <button class="modal-btn">Sign In</button>
-            <button class="modal-btn">Create Account</button>
-            <hr>
-            <button class="modal-btn" style="background:#4285F4; color:white; border:none;">Continue with Google</button>
-            <button class="modal-btn" style="background:#333; color:white; border:none;">Continue with GitHub</button>
-        </div>
+    <div id="fullAccountModal" class="full-page-modal">
+        <div class="back-btn" onclick="closeAccount()">← Back</div>
+        <h2>Account Settings</h2>
+        <button class="action-btn" style="background:#4285F4;">Google</button>
+        <button class="action-btn" style="background:#333; margin-top:10px;">GitHub</button>
     </div>
 
-    <div class="loader" id="loader"><h1>Uploading...</h1></div>
+    <div class="loader" id="loader"><h1>Uploading... <span id="timeRemaining"></span></h1></div>
 
     <div class="settings-container">
         <div class="menu-icon" onclick="toggleMenu()">
@@ -68,17 +60,14 @@
         <div id="menu" class="settings-menu">
             <button onclick="openAccount()">Account</button>
             <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
-            <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
-            <button>Help</button>
         </div>
     </div>
 
     <div class="container">
         <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
-        <p>Upload simply, share in seconds.</p>
         
-        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files (Multi)</label>
+        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files</label>
         <input type="file" id="fileInput" multiple onchange="handleFile()">
         
         <button class="action-btn" onclick="uploadFile()">Upload Files</button>
@@ -87,19 +76,13 @@
         <div class="dashboard-section">
             <h3>My Files</h3>
             <ul class="file-list" id="fileList">
-                <li class="file-item">No files selected yet.</li>
+                <li class="file-item">No files selected.</li>
             </ul>
-        </div>
-        
-        <div class="features-grid">
-            <button style="background:#55acee; color:white; border:none; padding:10px;">Share Telegram</button>
-            <button style="background:#25d366; color:white; border:none; padding:10px;">Share WhatsApp</button>
         </div>
     </div>
 
     <footer>
-        <p>© 2026 FastDrop | Support: <a href="https://t.me/fastdrop_support">@fastdrop_support</a></p>
-        <p style="margin-top: 10px; font-style: italic; color: #2e7d32;">Designed with care by <strong>Houssen Al Houssen</strong></p>
+        <p>© 2026 FastDrop | Designed by <strong>Houssen Al Houssen</strong></p>
     </footer>
 
     <script>
@@ -109,66 +92,43 @@
             const menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
         }
+        function openAccount() { document.getElementById('fullAccountModal').style.display = 'block'; toggleMenu(); }
+        function closeAccount() { document.getElementById('fullAccountModal').style.display = 'none'; }
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
 
-        // Functions for Modal
-        function openAccount() {
-            document.getElementById('accountModal').style.display = 'flex';
-            toggleMenu();
-        }
-        function closeAccount() {
-            document.getElementById('accountModal').style.display = 'none';
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + " B";
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " kB";
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+            return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
-        }
         function handleFile() {
             const input = document.getElementById('fileInput');
-            for(let file of input.files) {
-                selectedFiles.push(file);
-            }
+            selectedFiles = Array.from(input.files);
             renderFileList();
         }
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
-            renderFileList();
-        }
+
         function renderFileList() {
             const list = document.getElementById('fileList');
             list.innerHTML = "";
-            if (selectedFiles.length === 0) {
-                list.innerHTML = '<li class="file-item">No files selected yet.</li>';
-                document.getElementById('fileLabel').innerText = "Choose Files (Multi)";
-                return;
-            }
-            document.getElementById('fileLabel').innerText = selectedFiles.length + " files selected";
             selectedFiles.forEach((file, index) => {
-                list.innerHTML += `
-                    <li class="file-item">
-                        <span>${file.name} (${(file.size/1024/1024).toFixed(2)} MB)</span>
-                        <span class="delete-btn" onclick="removeFile(${index})">Delete</span>
-                    </li>`;
+                list.innerHTML += `<li class="file-item">${file.name} (${formatBytes(file.size)}) <span class="delete-btn" onclick="removeFile(${index})">X</span></li>`;
             });
         }
+
+        function removeFile(index) { selectedFiles.splice(index, 1); renderFileList(); }
+
         function uploadFile() {
-            if(selectedFiles.length === 0) return alert("Please select files first");
+            if(selectedFiles.length === 0) return;
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('progress').style.display = 'block';
             let width = 0;
             let interval = setInterval(() => {
-                if (width >= 100) { 
-                    clearInterval(interval); 
-                    document.getElementById('loader').style.display = 'none';
-                    alert("Upload Complete!");
-                    selectedFiles = [];
-                    renderFileList();
-                    document.getElementById('progress').style.display = 'none';
-                    document.getElementById('bar').style.width = '0%';
-                } else { width++; document.getElementById('bar').style.width = width + '%'; }
-            }, 30);
+                if (width >= 100) { clearInterval(interval); document.getElementById('loader').style.display = 'none'; alert("Done!"); } 
+                else { width++; document.getElementById('bar').style.width = width + '%'; document.getElementById('timeRemaining').innerText = (100 - width) + "s remaining"; }
+            }, 100);
         }
     </script>
 </body>
 </html>
- 
