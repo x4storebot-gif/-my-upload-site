@@ -23,18 +23,16 @@
         #fileInput { display: none; }
         .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; }
         
-        /* ميزات الميديا فاير الجديدة */
-        .dashboard-section { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px; text-align: left; }
-        .file-list { margin-top: 10px; list-style: none; padding: 0; }
-        .file-item { display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.05); margin-bottom: 5px; border-radius: 5px; font-size: 0.9rem; }
+        /* تنسيق قائمة الملفات مع زر الحذف */
+        .file-list { margin-top: 20px; text-align: left; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; border: 1px solid #ddd; }
+        .delete-btn { color: red; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         
         .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
         #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
         #bar { width: 0%; height: 100%; background: #2e7d32; }
         
         footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
-        footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -48,7 +46,7 @@
         <div id="menu" class="settings-menu">
             <button>Account</button>
             <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
-            <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
+            <button>Support</button>
             <button>Help</button>
         </div>
     </div>
@@ -56,65 +54,66 @@
     <div class="container">
         <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
-        <p>Upload simply, share in seconds.</p>
         
-        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files (Multi)</label>
-        <input type="file" id="fileInput" multiple onchange="handleFile()">
+        <label for="fileInput" class="file-upload-btn">Choose Files</label>
+        <input type="file" id="fileInput" multiple onchange="handleFiles()">
         
+        <div id="fileList" class="file-list"></div>
+
         <button class="action-btn" onclick="uploadFile()">Upload Files</button>
         <div id="progress"><div id="bar"></div></div>
-        
-        <div class="dashboard-section">
-            <h3>My Files</h3>
-            <ul class="file-list" id="fileList">
-                <li class="file-item">No files uploaded yet.</li>
-            </ul>
-        </div>
-        
-        <div class="features-grid">
-            <button style="background:#55acee; color:white; border:none; padding:10px;">Share Telegram</button>
-            <button style="background:#25d366; color:white; border:none; padding:10px;">Share WhatsApp</button>
-        </div>
     </div>
 
-    <footer>
-        <p>© 2026 FastDrop | Support: <a href="https://t.me/fastdrop_support">@fastdrop_support</a></p>
-    </footer>
-
     <script>
+        let selectedFiles = [];
+
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
         }
+
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-            document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
         }
-        function handleFile() {
+
+        function handleFiles() {
             const input = document.getElementById('fileInput');
-            if (input.files.length > 0) {
-                document.getElementById('fileLabel').innerText = input.files.length + " files selected";
+            for(let file of input.files) {
+                selectedFiles.push(file);
             }
+            renderFiles();
         }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            renderFiles();
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = "";
+            selectedFiles.forEach((file, index) => {
+                list.innerHTML += `
+                    <div class="file-item">
+                        <span>${file.name}</span>
+                        <span class="delete-btn" onclick="removeFile(${index})">Delete</span>
+                    </div>
+                `;
+            });
+        }
+
         function uploadFile() {
-            const input = document.getElementById('fileInput');
-            if(!input.files.length) return alert("Please select files first");
-            
+            if(selectedFiles.length === 0) return alert("Please select files first");
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('progress').style.display = 'block';
-            
             let width = 0;
             let interval = setInterval(() => {
                 if (width >= 100) { 
                     clearInterval(interval); 
                     document.getElementById('loader').style.display = 'none';
-                    // إضافة الملفات إلى القائمة (محاكاة)
-                    const list = document.getElementById('fileList');
-                    list.innerHTML = "";
-                    for(let i=0; i < input.files.length; i++) {
-                        list.innerHTML += `<li class="file-item"><span>${input.files[i].name}</span> <span>${(input.files[i].size/1024/1024).toFixed(2)} MB</span></li>`;
-                    }
                     alert("Upload Complete!"); 
+                    selectedFiles = [];
+                    renderFiles();
                 } else { width++; document.getElementById('bar').style.width = width + '%'; }
             }, 30);
         }
