@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastDrop</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --bg: linear-gradient(135deg, #e0f7fa, #e8f5e9); --card: white; --text: #000; }
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; display: flex; flex-direction: column; min-height: 100vh; }
         .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        /* تعديل أيقونة الترس لتصبح ☰ */
         .settings-container { position: absolute; top: 20px; right: 20px; z-index: 100; }
-        .settings-icon { cursor: pointer; font-size: 30px; }
+        .settings-icon { cursor: pointer; font-size: 30px; font-weight: bold; }
         .settings-menu { display: none; background: #a5d6a7; padding: 10px; border-radius: 10px; margin-top: 5px; position: absolute; right: 0; }
         .settings-menu button { display: block; width: 100%; cursor: pointer; background: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; margin-bottom: 5px; color: #2e7d32; }
         img { width: 220px; margin-bottom: 10px; }
         .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 20px; border-radius: 10px; cursor: pointer; display: block; margin: 30px 0; color: #555; font-weight: bold; }
         #fileInput { display: none; }
-        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; }
-        #previewContainer { margin: 15px 0; display: none; text-align: left; font-size: 0.8rem; }
+        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 20px 50px; border-radius: 10px; cursor: pointer; font-size: 1.3rem; width: 100%; margin-bottom: 10px; }
+        #previewContainer { margin: 15px 0; display: none; }
+        #fileInfo { font-weight: bold; font-size: 0.9rem; color: #2e7d32; }
         .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
-        #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
-        #bar { width: 0%; height: 100%; background: #2e7d32; }
         footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
         footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
-        /* إضافات جديدة للـ 10 ميزات */
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .auth-btn { background: #4285f4; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin: 5px; }
     </style>
 </head>
 <body>
@@ -32,30 +32,30 @@
     <div class="loader" id="loader"><h1>Uploading...</h1></div>
 
     <div class="settings-container">
-        <div class="settings-icon" onclick="toggleMenu()">⚙️</div>
+        <div class="settings-icon" onclick="toggleMenu()">☰</div>
         <div id="menu" class="settings-menu">
             <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
             <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
-            <button>Dashboard</button> <button>History</button> </div>
+        </div>
     </div>
 
     <div class="container">
-        <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
         <p>Upload simply, share in seconds.</p>
         
+        <div id="authArea">
+            <button class="auth-btn" onclick="signIn('google')">Login Google</button>
+            <button class="auth-btn" onclick="signIn('github')">Login GitHub</button>
+        </div>
+        
         <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose File</label>
-        <input type="file" id="fileInput" multiple onchange="handleFile()"> <div id="previewContainer">
+        <input type="file" id="fileInput" onchange="handleFile()">
+        
+        <div id="previewContainer">
             <div id="fileInfo"></div>
-            <div id="stats">Downloads: 0</div> </div>
+        </div>
 
         <button class="action-btn" onclick="uploadFile()">Upload File</button>
-        <div id="progress"><div id="bar"></div></div>
-        
-        <div class="features-grid">
-            <button style="background:#55acee; color:white; border:none; padding:10px;">Share Telegram</button>
-            <button style="background:#25d366; color:white; border:none; padding:10px;">Share WhatsApp</button>
-        </div>
     </div>
 
     <footer>
@@ -63,36 +63,52 @@
     </footer>
 
     <script>
+        const supabaseUrl = 'https://rqvtiyswfaoqhblprrxu.supabase.co';
+        const supabaseKey = 'sb_publishable_LQMVRCiYvENnDpm9clhOsw_0CqOa_zx';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function signIn(provider) {
+            await supabase.auth.signInWithOAuth({ provider });
+        }
+
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
         }
+        
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
         }
+        
         function handleFile() {
             const input = document.getElementById('fileInput');
             const file = input.files[0];
             if (file) {
                 document.getElementById('fileLabel').innerText = file.name;
                 document.getElementById('previewContainer').style.display = 'block';
-                const size = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-                document.getElementById('fileInfo').innerText = `Type: ${file.type.split('/')[1] || 'File'} | Size: ${size}`;
+                const size = (file.size / 1024 / 1024).toFixed(2);
+                document.getElementById('fileInfo').innerText = `File: ${file.name} | Size: ${size} MB`;
             }
         }
-        function uploadFile() {
-            if(!document.getElementById('fileInput').files.length) return alert("Please select a file first");
+
+        async function uploadFile() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("Please select a file first!");
+            
             document.getElementById('loader').style.display = 'flex';
-            document.getElementById('progress').style.display = 'block';
-            let width = 0;
-            let interval = setInterval(() => {
-                if (width >= 100) { 
-                    clearInterval(interval); 
-                    document.getElementById('loader').style.display = 'none';
-                    alert("Upload Complete! Link ready to share."); 
-                } else { width++; document.getElementById('bar').style.width = width + '%'; }
-            }, 30);
+
+            const { data, error } = await supabase.storage
+                .from('FastDrop')
+                .upload(Date.now() + '_' + file.name, file);
+
+            document.getElementById('loader').style.display = 'none';
+
+            if (error) {
+                alert("Upload Error: " + error.message);
+            } else {
+                alert("Upload Complete!");
+            }
         }
     </script>
 </body>
