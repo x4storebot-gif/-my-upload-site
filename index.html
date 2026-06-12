@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastDrop</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --bg: linear-gradient(135deg, #e0f7fa, #e8f5e9); --card: white; --text: #000; }
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
@@ -83,11 +82,6 @@
     </footer>
 
     <script>
-        // إعداد الاتصال بـ Supabase
-        const supabaseUrl = 'https://rqvtiyswfaoqhblprrxu.supabase.co';
-        const supabaseKey = 'Sb_publishable_LQMVRCiYvENnDpm9clhOsw_0CqOa_zx';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
         let selectedFiles = [];
 
         function toggleMenu() {
@@ -126,30 +120,22 @@
                     </li>`;
             });
         }
-        
-        async function uploadFile() {
+        function uploadFile() {
             if(selectedFiles.length === 0) return alert("Please select files first");
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('progress').style.display = 'block';
-            
-            // رفع الملفات فعلياً إلى Supabase
-            for (let file of selectedFiles) {
-                const { data, error } = await supabase.storage
-                    .from('fastdrop')
-                    .upload(file.name, file);
-                
-                if (error) {
-                    console.error("Error uploading:", error);
-                    alert("Error uploading " + file.name);
-                }
-            }
-
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('progress').style.display = 'none';
-            alert("Upload Process Complete!"); 
-            selectedFiles = [];
-            renderFileList();
-            document.getElementById('bar').style.width = '0%';
+            let width = 0;
+            let interval = setInterval(() => {
+                if (width >= 100) { 
+                    clearInterval(interval); 
+                    document.getElementById('loader').style.display = 'none';
+                    alert("Upload Complete!");
+                    selectedFiles = [];
+                    renderFileList();
+                    document.getElementById('progress').style.display = 'none';
+                    document.getElementById('bar').style.width = '0%';
+                } else { width++; document.getElementById('bar').style.width = width + '%'; }
+            }, 30);
         }
     </script>
 </body>
