@@ -25,101 +25,64 @@
         .file-item { display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.05); margin-bottom: 5px; border-radius: 5px; font-size: 0.9rem; align-items: center; }
         .delete-btn { color: #d32f2f; cursor: pointer; font-weight: bold; margin-left: 10px; }
         .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
-        #progress { width: 100%; height: 15px; background: #ddd; border-radius: 10px; margin: 30px 0; overflow: hidden; display: none; }
-        #bar { width: 0%; height: 100%; background: #2e7d32; }
         footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div class="loader" id="loader"><h1>Uploading...</h1></div>
-
-    <div class="settings-container">
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div></div><div></div><div></div>
-        </div>
-        <div id="menu" class="settings-menu">
-            <button>Account</button>
-            <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
-            <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
-        </div>
-    </div>
+    <div class="loader" id="loader"><h1>Uploading to Supabase...</h1></div>
 
     <div class="container">
-        <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
-        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files (Multi)</label>
+        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files</label>
         <input type="file" id="fileInput" multiple onchange="handleFile()">
-        
-        <button class="action-btn" onclick="uploadFile()">Upload Files</button>
-        <div id="progress"><div id="bar"></div></div>
+        <button class="action-btn" onclick="uploadFiles()">Upload Files</button>
         
         <div class="dashboard-section">
             <h3>My Files</h3>
-            <ul class="file-list" id="fileList">
-                <li class="file-item">No files selected yet.</li>
-            </ul>
+            <ul class="file-list" id="fileList"></ul>
         </div>
     </div>
 
     <script>
-        // إعداد الاتصال بالسحابة
+        // إعداد الاتصال
         const supabaseUrl = 'https://rqvtiyswfaoqhblprrxu.supabase.co';
         const supabaseKey = 'Sb_publishable_LQMVRCiYvENnDpm9clhOsw_0CqOa_zx';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         let selectedFiles = [];
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
-        }
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-        }
         function handleFile() {
-            const input = document.getElementById('fileInput');
-            for(let file of input.files) {
-                selectedFiles.push(file);
-            }
+            selectedFiles = Array.from(document.getElementById('fileInput').files);
             renderFileList();
         }
+
+        function renderFileList() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = selectedFiles.map((f, i) => `
+                <li class="file-item">${f.name} <span class="delete-btn" onclick="removeFile(${i})">Delete</span></li>
+            `).join('');
+        }
+
         function removeFile(index) {
             selectedFiles.splice(index, 1);
             renderFileList();
         }
-        function renderFileList() {
-            const list = document.getElementById('fileList');
-            list.innerHTML = "";
-            if (selectedFiles.length === 0) {
-                list.innerHTML = '<li class="file-item">No files selected yet.</li>';
-                return;
-            }
-            selectedFiles.forEach((file, index) => {
-                list.innerHTML += `
-                    <li class="file-item">
-                        <span>${file.name}</span>
-                        <span class="delete-btn" onclick="removeFile(${index})">Delete</span>
-                    </li>`;
-            });
-        }
 
         // دالة الرفع الفعلية
-        async function uploadFile() {
-            if(selectedFiles.length === 0) return alert("Please select files first");
+        async function uploadFiles() {
+            if(selectedFiles.length === 0) return alert("Select files first!");
             document.getElementById('loader').style.display = 'flex';
-            
+
             for (let file of selectedFiles) {
                 const { data, error } = await supabase.storage
                     .from('fastdrop')
-                    .upload(Date.now() + '_' + file.name, file);
-
-                if (error) {
-                    alert("Error: " + error.message);
-                } else {
-                    alert("Upload Successful!");
-                }
+                    .upload(file.name, file);
+                
+                if (error) alert("Error uploading " + file.name + ": " + error.message);
+                else alert("Successfully uploaded " + file.name);
             }
+
             document.getElementById('loader').style.display = 'none';
             selectedFiles = [];
             renderFileList();
