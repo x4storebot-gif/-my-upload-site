@@ -8,104 +8,85 @@
         :root { --bg: linear-gradient(135deg, #e0f7fa, #e8f5e9); --card: white; --text: #000; }
         .dark-mode { --bg: #121212; --card: #1e1e1e; --text: #fff; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; padding: 20px; text-align: center; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 700px; margin: auto; }
         
-        /* الصندوق الابيض تم تصغير عرضه */
-        .container { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
-        
-        /* القائمة خارج المربع الابيض */
-        .settings-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
-        .menu-icon { cursor: pointer; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 5px; }
-        .menu-icon div { width: 25px; height: 3px; background: var(--text); margin: 5px 0; }
+        .settings-container { position: absolute; top: 20px; right: 20px; z-index: 100; }
+        .menu-icon { cursor: pointer; padding: 10px; }
+        .menu-icon div { width: 25px; height: 3px; background: var(--text); margin: 5px 0; transition: 0.3s; }
         
         .settings-menu { display: none; background: var(--card); border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin-top: 5px; position: absolute; right: 0; width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: left; }
         .settings-menu button { display: block; width: 100%; cursor: pointer; background: transparent; border: none; padding: 10px; color: var(--text); font-weight: bold; }
-        
-        /* واجهة الحساب الكاملة */
-        .full-page-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--card); z-index: 2000; padding: 20px; box-sizing: border-box; text-align: left; }
-        .back-btn { cursor: pointer; font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; display: inline-block; }
+        .settings-menu button:hover { background: rgba(0,128,0,0.1); }
 
-        img { width: 150px; margin-bottom: 10px; }
-        .file-upload-btn { background: #eee; border: 2px dashed #2e7d32; padding: 15px; border-radius: 10px; cursor: pointer; display: block; margin: 20px 0; color: #555; font-weight: bold; }
+        img { width: 150px; }
+        .drag-area { border: 2px dashed #2e7d32; padding: 30px; border-radius: 10px; margin: 20px 0; cursor: pointer; }
         #fileInput { display: none; }
-        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; width: 100%; }
+        .action-btn { background-color: #2e7d32; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 1.1rem; }
         
-        .dashboard-section { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px; text-align: left; }
-        .file-list { margin-top: 10px; list-style: none; padding: 0; }
-        .file-item { display: flex; justify-content: space-between; padding: 8px; background: rgba(0,0,0,0.05); margin-bottom: 5px; border-radius: 5px; font-size: 0.85rem; }
-        .delete-btn { color: #d32f2f; cursor: pointer; font-weight: bold; }
+        .dashboard-section { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px; text-align: left; }
+        .controls { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .file-list { list-style: none; padding: 0; display: grid; gap: 10px; }
+        .grid-view { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        .file-item { display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 5px; font-size: 0.85rem; align-items: center; }
+        .copy-btn { background: #eee; border: none; padding: 5px; cursor: pointer; border-radius: 3px; }
         
         .loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; align-items: center; justify-content: center; z-index: 1000; }
-        #progress { width: 100%; height: 10px; background: #ddd; border-radius: 10px; margin: 20px 0; display: none; }
-        #bar { width: 0%; height: 100%; background: #2e7d32; }
+        #progress-container { margin: 20px 0; }
+        .progress-bar { height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; }
+        .bar { width: 0%; height: 100%; background: #2e7d32; transition: width 0.3s; }
         
-        footer { margin-top: auto; padding: 15px; opacity: 0.8; font-size: 0.8rem; }
+        footer { margin-top: auto; padding: 20px; opacity: 0.8; font-size: 0.9rem; }
         footer a { color: #2e7d32; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="fullAccountModal" class="full-page-modal">
-        <div class="back-btn" onclick="closeAccount()">← Back</div>
-        <h2>Account Settings</h2>
-        <button class="action-btn" style="background:#4285F4;">Google</button>
-        <button class="action-btn" style="background:#333; margin-top:10px;">GitHub</button>
-    </div>
-
-    <div class="loader" id="loader"><h1>Uploading... <span id="timeRemaining"></span></h1></div>
+    <div class="loader" id="loader"><h1>Uploading...</h1></div>
 
     <div class="settings-container">
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div></div><div></div><div></div>
-        </div>
+        <div class="menu-icon" onclick="toggleMenu()"><div></div><div></div><div></div></div>
         <div id="menu" class="settings-menu">
-            <button onclick="openAccount()">Account</button>
             <button id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
+            <button onclick="window.open('https://t.me/fastdrop_support')">Support</button>
         </div>
     </div>
 
     <div class="container">
-        <img src="FD.png" alt="Logo">
         <h1>FastDrop</h1>
+        <div class="drag-area" id="dropArea" onclick="document.getElementById('fileInput').click()">
+            <p>Drag & Drop Files or Click to Upload</p>
+            <input type="file" id="fileInput" multiple onchange="handleFile(this.files)">
+        </div>
         
-        <label for="fileInput" class="file-upload-btn" id="fileLabel">Choose Files</label>
-        <input type="file" id="fileInput" multiple onchange="handleFile()">
-        
-        <button class="action-btn" onclick="uploadFile()">Upload Files</button>
-        <div id="progress"><div id="bar"></div></div>
+        <button class="action-btn" onclick="uploadFiles()">Upload Files</button>
         
         <div class="dashboard-section">
-            <h3>My Files</h3>
+            <div class="controls">
+                <h3>My Files</h3>
+                <div>
+                    <input type="text" placeholder="Search..." onkeyup="filterFiles(this.value)">
+                    <button onclick="toggleView()">Switch View</button>
+                </div>
+            </div>
             <ul class="file-list" id="fileList">
                 <li class="file-item">No files selected.</li>
             </ul>
         </div>
     </div>
 
-    <footer>
-        <p>© 2026 FastDrop | Designed by <strong>Houssen Al Houssen</strong></p>
-    </footer>
-
     <script>
         let selectedFiles = [];
+        let isGridView = false;
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.style.display = (menu.style.display === 'block' ? 'none' : 'block');
-        }
-        function openAccount() { document.getElementById('fullAccountModal').style.display = 'block'; toggleMenu(); }
-        function closeAccount() { document.getElementById('fullAccountModal').style.display = 'none'; }
+        function toggleMenu() { document.getElementById('menu').style.display = (document.getElementById('menu').style.display === 'block' ? 'none' : 'block'); }
         function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-
-        function formatBytes(bytes) {
-            if (bytes < 1024) return bytes + " B";
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " kB";
-            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-            return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+        function toggleView() { 
+            isGridView = !isGridView; 
+            document.getElementById('fileList').classList.toggle('grid-view'); 
         }
 
-        function handleFile() {
-            const input = document.getElementById('fileInput');
-            selectedFiles = Array.from(input.files);
+        function handleFile(files) {
+            for(let file of files) selectedFiles.push(file);
             renderFileList();
         }
 
@@ -113,22 +94,30 @@
             const list = document.getElementById('fileList');
             list.innerHTML = "";
             selectedFiles.forEach((file, index) => {
-                list.innerHTML += `<li class="file-item">${file.name} (${formatBytes(file.size)}) <span class="delete-btn" onclick="removeFile(${index})">X</span></li>`;
+                list.innerHTML += `
+                    <li class="file-item">
+                        <span>📄 ${file.name}</span>
+                        <button class="copy-btn" onclick="copyLink()">Copy Link</button>
+                    </li>`;
             });
         }
 
-        function removeFile(index) { selectedFiles.splice(index, 1); renderFileList(); }
-
-        function uploadFile() {
-            if(selectedFiles.length === 0) return;
+        function copyLink() { alert("Link copied to clipboard!"); }
+        
+        function uploadFiles() {
+            if(selectedFiles.length === 0) return alert("Select files first!");
             document.getElementById('loader').style.display = 'flex';
-            document.getElementById('progress').style.display = 'block';
-            let width = 0;
-            let interval = setInterval(() => {
-                if (width >= 100) { clearInterval(interval); document.getElementById('loader').style.display = 'none'; alert("Done!"); } 
-                else { width++; document.getElementById('bar').style.width = width + '%'; document.getElementById('timeRemaining').innerText = (100 - width) + "s remaining"; }
-            }, 100);
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                alert("Upload Complete!");
+                selectedFiles = [];
+                renderFileList();
+            }, 2000);
         }
+
+        const dropArea = document.getElementById('dropArea');
+        dropArea.addEventListener('dragover', (e) => { e.preventDefault(); });
+        dropArea.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files); });
     </script>
 </body>
 </html>
